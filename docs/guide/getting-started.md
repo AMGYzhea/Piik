@@ -31,7 +31,7 @@ and use its buttons. Safari may show system controls in video fullscreen.
 | Control | What it does |
 | --- | --- |
 | **Theater mode** | Expands the picture inside the browser tab. |
-| **Fullscreen** | Fills your screen. |
+| **Fullscreen** | Uses the full screen while keeping the picture's proportions; black bars can remain when they differ from your screen. |
 | **Picture in picture** | Opens a floating video where supported. |
 | **Volume** | Goes up to 200% with audio boost, or 100% otherwise. Lower it if the sound distorts. |
 
@@ -145,7 +145,7 @@ sharing to allow that fallback. The project's online site uses P2P only.
 ## Add your voice
 
 While sharing, select **Microphone** below the picture and
-allow microphone access. Select it again to mute. Open **Sharing settings** below the picture
+allow microphone access. Select it again to mute. Open **Settings → Sound** below the picture
 to choose a microphone and adjust its input volume.
 The default volume is 100%, with up to 200% available.
 Source audio and your voice reach viewers together. The Host preview stays muted.
@@ -176,10 +176,15 @@ This excludes one process and its children. Other apps remain audible, including
 those playing through other output devices.
 It does not mute your Piik microphone or prevent speaker sound reaching a microphone.
 
-If the excluded app closes or restarts, source audio stops. Use **Switch source**
-and select it again. Turning source audio off retains the exclusion choice;
+While sharing, use **Sharing settings → Sound** to change system sound or the
+excluded app without stopping the share. If the app closes or restarts, source
+audio stops; refresh the application list and select it again.
+Turning source audio off retains the exclusion choice;
 select **None** to restore unfiltered system audio. This control requires an updated page and a Windows App
 whose capability probe supports process exclusion; it is not a Browser-capture filter.
+Windows 10 support depends on system updates and the actual capability check.
+If the option is absent, share a single application window or route the voice
+app to a different playback device.
 
 ## Chat and reactions
 

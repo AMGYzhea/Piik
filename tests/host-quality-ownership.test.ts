@@ -8,11 +8,12 @@ import {
   type QualitySettings,
 } from "../src/client/media/quality";
 import { NativeSenderPeer } from "../src/client/native/native-sender-peer";
-import { NativeCompatibilityError } from "../src/client/native/client";
+import { NativeCompatibilityError, NativeRequestError } from "../src/client/native/client";
+import { nativeCaptureTargetKey } from "../src/client/native/capture-selection";
 import { NativeMediaBridgeError } from "../src/client/native/media-bridge";
 import { reconcileBoundedMediaChildren } from "../src/client/webrtc/media-assignment";
 import { debugError, debugEvent, debugOperation } from "../src/client/lib/debug";
-import { hostActionErrorNotice, isCapturePermissionFailure } from "../src/client/pages/host-page-notices";
+import { hostActionErrorNotice, hostFailureCode, isCapturePermissionFailure } from "../src/client/pages/host-page-notices";
 
 // Exercise the actual page owners without mounting capture hardware or a Browser.
 const source = ts.createSourceFile("HostPage.tsx", readFileSync(
@@ -63,13 +64,13 @@ function fixture(launchedByClient = true) {
   const client = { updateShare: vi.fn(async () => undefined), replaceShareSource: vi.fn(async () => undefined),
     startShare: vi.fn(async (): Promise<{ audio: boolean; codec: "h264" }> => ({ audio: false, codec: "h264" })),
     onEvent: vi.fn((_listener: (event: unknown) => void) => () => undefined),
-    close: vi.fn(), onClose: vi.fn(() => () => undefined),
+    close: vi.fn(), onClose: vi.fn((_listener: () => void) => () => undefined),
     health: { nativeMedia: { video: true, hardwareH264: true, softwareVP8: true } },
     captureOptions: vi.fn(async () => []), sources: vi.fn(async () => []),
     stopReceive: vi.fn(async () => undefined), stopShare: vi.fn(async () => undefined) };
   const route = { updateProfile: vi.fn(async () => true), resyncAuthoritative: vi.fn(async (): Promise<void> => undefined) };
   const state = {
-    debugError, debugEvent, debugOperation, NativeCompatibilityError, NativeMediaBridgeError, isCapturePermissionFailure, DOMException,
+    debugError, debugEvent, debugOperation, NativeCompatibilityError, NativeRequestError, NativeMediaBridgeError, isCapturePermissionFailure, hostFailureCode, DOMException,
     launchedByClient, hostRoomSessionAvailable: false,
     NativeClient: { connect: vi.fn(async (): Promise<typeof client | null> => null) },
     nativeClientConnectRef: ref<Promise<typeof client | null> | null>(null),
@@ -87,13 +88,13 @@ function fixture(launchedByClient = true) {
 
     createRoom: vi.fn(async () => { throw new Error("must not create an empty room"); }),
     readPreferredRoomId: () => null, disposeResources: vi.fn(), ApiError: class extends Error {},
-    NativeMediaBridge: vi.fn(function () { return bridge; }), manualVideoCodecPreference: vi.fn(),
+    NativeMediaBridge: vi.fn(function (_shareId: string, _client: unknown, _onFailed: () => void) { return bridge; }), manualVideoCodecPreference: vi.fn(),
     phase: "live", qualitySettingsRef: ref<QualitySettings>(original), advancedQualityRef: ref<QualitySettings>(original),
     qualityChangeRef: ref<object | null>(null), pendingQualityChangeRef: ref<QualitySettings | null>(null),
     activeGenerationRef: ref<number | null>(1), streamRef: ref<typeof stream | null>(stream), sourceSwitchRef: ref<object | null>(null),
     nativeSourceAudioRef: ref<boolean | undefined>(undefined), setMicrophoneEnabled: vi.fn(),
     microphoneVoiceProcessing: true, setMicrophoneVoiceProcessing: vi.fn(),
-    nativeAudioSelectionRef: ref<{ enabled: boolean; exclude?: unknown } | null>(null),
+    nativeSourceSelectionRef: ref<Record<string, unknown> | null>(null), nativeCaptureTargetKey,
     nativeModeRef: ref(false), nativeClientRef: ref<typeof client | null>(client), nativeShareGenerationRef: ref<string | null>("share"),
     hostAudioRef: ref<{ sourceStream: MediaStream } | null>(null),
     nativeMediaIngressRef: ref<ReturnType<typeof ingress> | null>(null), nativeMediaBridgeRef: ref(null),
@@ -483,15 +484,31 @@ describe("Host quality ownership", () => {
     const path = { adapterIndex: 0, encoderIndex: 0 };
     for (const enabled of [true, false, true]) {
       await current.context.switchNativeSource(current.client, target, enabled, path, false, excluded);
-      expect(current.nativeAudioSelectionRef.current).toEqual({ enabled, exclude: excluded });
+      expect(current.nativeSourceSelectionRef.current).toMatchObject({ target, audio: enabled, excludeAudio: excluded });
       expect(current.client.replaceShareSource).toHaveBeenLastCalledWith("share", target, enabled, path, false, enabled ? excluded : undefined);
     }
     const next = { ...excluded, pid: 321, creationTime: "654" };
     current.client.replaceShareSource.mockRejectedValueOnce(new Error("audio unavailable"));
     await current.context.switchNativeSource(current.client, target, true, path, false, next);
-    expect(current.nativeAudioSelectionRef.current).toEqual({ enabled: true, exclude: next });
+    expect(current.nativeSourceSelectionRef.current).toMatchObject({ target, audio: true, excludeAudio: next });
     current.disposeNative();
-    expect(current.nativeAudioSelectionRef.current).toBeNull();
+    expect(current.nativeSourceSelectionRef.current).toBeNull();
+  });
+
+  it("changes native source audio without resetting sender quality or SFU publication", async () => {
+    const current = fixture();
+    current.nativeModeRef.current = true;
+    current.routePolicyRef.current.topologyOptimization = true;
+    const target = { kind: "display", sourceId: "2", title: "Display" };
+    const path = { adapterIndex: 0, encoderIndex: 0 };
+    current.nativeSourceSelectionRef.current = { target, path, client: current.client, showCaptureBorder: false, audio: true };
+    const excluded = { kind: "window", sourceId: "3", pid: 123, creationTime: "456", title: "Voice" };
+    await current.context.switchNativeSource(current.client, { ...target, title: "Renamed" }, true, path, false, excluded);
+    expect(current.client.replaceShareSource).toHaveBeenCalledOnce();
+    expect(current.invalidateSenderQualityEvidence).not.toHaveBeenCalled();
+    expect(current.signalRef.current.send).not.toHaveBeenCalled();
+    expect(current.hostSfuRouteRef.current.updateProfile).not.toHaveBeenCalled();
+    expect(current.sourceSwitchRef.current).toBeNull();
   });
 
   it.each(["browser", "native"] as const)("keeps the %s selection until room work permits capture", async (kind) => {
@@ -563,6 +580,7 @@ describe("Host quality ownership", () => {
     expect(setNoticeValue).toHaveBeenLastCalledWith({
       kind: "text", text: hostActionErrorNotice(denied, "capture"),
       target: "television", comic: "hint-capture-browser", tone: "warn",
+      failureCode: "browser/NotAllowedError",
     });
     expect(current.setPhase).toHaveBeenLastCalledWith("idle");
     expect(current.createRoom).not.toHaveBeenCalled();
@@ -732,6 +750,7 @@ describe("Host quality ownership", () => {
     expect(setNoticeValue).toHaveBeenLastCalledWith({
       kind: "text", text: hostActionErrorNotice(denied, "source"),
       target: "operation", comic: "hint-capture-browser", tone: "warn",
+      failureCode: "browser/NotAllowedError",
     });
     expect(current.setPhase).not.toHaveBeenCalled();
     expect(current.track.stop).not.toHaveBeenCalled();
@@ -751,6 +770,26 @@ describe("Host quality ownership", () => {
       target: "television", comic, tone,
     });
     expect(current.setPhase).toHaveBeenLastCalledWith("ended");
+    expect(current.activeGenerationRef.current).toBeNull();
+  });
+
+  it.each([
+    ["capture", "host.shareEnded", "app/capture/failed", "source-failed"],
+    ["media", "native.fail.edge", "app/browser-media/connection", "route-failed"],
+    ["control", "native.fail.controlDisconnected", "app/control/disconnected", "route-failed"],
+  ])("retains the known %s failure when retiring native sharing", async (kind, key, failureCode, comic) => {
+    const current = fixture();
+    current.generationRef.current = 1;
+    current.nativeClientRef.current = null;
+    current.context.ownNativeClient(current.client);
+    await current.startNative();
+    if (kind === "control") current.client.onClose.mock.calls[0]![0]();
+    else if (kind === "media") current.NativeMediaBridge.mock.calls[0]![2]();
+    else current.client.onEvent.mock.calls[0]![0]({ type: "share-ended", shareId: "share", failed: true });
+    expect(current.setNoticeValue).toHaveBeenLastCalledWith({
+      kind: "key", key, vars: undefined, failureCode, target: "television", comic, tone: "bad",
+    });
+    expect(current.disposeResources).toHaveBeenCalledExactlyOnceWith(true, false);
     expect(current.activeGenerationRef.current).toBeNull();
   });
 

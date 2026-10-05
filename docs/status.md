@@ -1,6 +1,6 @@
 # Current Status
 
-Last updated: 2026-10-04
+Last updated: 2026-10-06
 
 This is the compact execution/deployment index. Product modules own behavior,
 [verification status](./verification-status.md) owns unresolved physical limits,
@@ -52,15 +52,17 @@ These features are published; physical device limits remain open.
 Release artifacts and operator deployment records own delivery completion;
 [TODO](./todo.md#now) owns remaining work.
 
-## Current Candidate
+## Current Work
 
-The owner authorized v1.8.0 publication on 2026-10-04. This phase retains the
-published protocols and 1440p ceiling; immutable release artifacts own delivery
-completion. Follow-up work reviews extension boundaries, implements 4K and more
-resolutions with capability negotiation, then develops Native Magicsock NAT
-traversal. The isolated transport experiment is not part of v1.8.0; its product
-integration and connectivity benefit still require verification.
-[TODO](./todo.md#now) owns remaining work and later release authorization.
+The public baseline retains Browser/server v23, Native control v9, capture v7
+and the 1440p ceiling. The compatible maintenance phase combines sharing-failure
+guidance and bilingual troubleshooting with source-list, codec admission,
+minimized-capture and gateway-mapping repairs. Live audio-exclusion controls
+reuse the source/mixer owner; website controls retain shared motion and cache
+identity. 4K and resolution/capability expansion are not planned for this phase.
+Native Magicsock remains a separate experiment, outside product integration.
+Immutable release artifacts own delivery completion; [TODO](./todo.md#now) owns
+remaining work.
 
 ## Deployment
 
@@ -89,7 +91,7 @@ public release on 2026-09-12. Source is public, main protection is active, and
 remains a separate deployment. Release descriptors and GitHub deployment records
 identify published artifacts and website revisions.
 
-The matching Server and three App packages are published on GitHub and Gitee;
+Matching Server and registered App packages are published on GitHub and Gitee;
 anonymous mirror downloads match the original checksums. Public-repository CI
 and native packaging passed. App entry, update links
 and bounded two-build interoperability have acceptance evidence. Accepted

@@ -1,49 +1,28 @@
 # Current TODO Ledger
 
-Last reviewed: 2026-10-04
+Last reviewed: 2026-10-06
 
 Only **Now** is executable. Product modules own behavior; Git/PRs own completed
 history. A parked idea is not implementation authority.
 
 ## Now
 
-- [ ] **Publish the accepted v1.8.0 candidate first.** Authorized by the owner
-  on 2026-10-04. Complete final checks and publish through the existing squash
-  PR, packaging, mirror and deployment workflow. Preserve
-  [#449](https://github.com/TNTcraftHIM/Piik/pull/449)'s contributor credit and
-  `Co-authored-by` identity. Reply to resolved issues at publication; retain
-  unmatched field reports below. This release keeps the published protocols
-  and 1440p ceiling; the subsequent media/transport work is separate.
-- [ ] **Resolve the extensibility audit boundaries before freezing 2.0.** Review
-  the media findings in the assessment below together with optional interaction
-  evolution: the current reaction catalog is a strict wire enum, and an unknown
-  reaction or extra event field terminates the Browser signaling session.
-  Current producers do not send those values. Choose bounded capability-gated
-  delivery or a safe presentation fallback before expanding the catalog; preserve
-  strict command and authority validation. No replacement protocol is accepted yet.
-- [ ] **Align native source-list aggregate bounds.** The helper admits up to
-  1024 sources, but `nativecapture.ListSources` reuses the 64 KiB probe-output
-  bound. A synthetic helper with 64 individually valid 512-character window
-  titles returns no list; the 32-source control succeeds. Align enumeration,
-  encoded JSON and loopback response budgets with bounded overflow behavior.
-  This is a confirmed uncommon enumeration failure, not a diagnosis of earlier
-  reporter logs; it does not justify removing byte limits or adding pagination.
-- [ ] **Implement extensible resolution and transport support after v1.8.0.**
-  The owner requested continued repository review, then 4K (#410) and additional
-  resolutions with adaptation and capability negotiation, followed by Magicsock
-  NAT traversal on 2026-10-04. Compare the isolated Go transport
+- [ ] **Assess Native Magicsock transport.** Compare the isolated Go transport
   with the repaired Pion baseline under the [NAT evidence boundary](#next-p2p-connection-and-feedback-evidence).
-  Evaluate orientation-independent resolution limits, source aspect preservation
-  and negotiated codec capabilities under the
-  [media extension assessment](./research/native-client-media.md#media-capability-extension-assessment).
-  Establish the supported paths, late-join behavior, resource bounds and public
-  compatibility boundary before freezing the production design. Additional
-  codecs still require a concrete format decision. Experiments do not establish
-  a connectivity gain; implementation authority does not authorize publishing
-  the later release.
+  Establish a measured benefit, supported paths, resource/authority bounds and
+  compatibility cost before accepting product integration. Experiments do not
+  establish a connectivity gain or authorize publication.
 
 ## Held By Owner
 
+- [ ] **4K and resolution/capability expansion.** Not planned for this phase,
+  reaffirmed by the owner on 2026-10-06 because of cost relative to benefit. Keep the
+  public v23/v9/v7 contract and 1440p ceiling. Resume the extensibility audit and
+  [media extension assessment](./research/native-client-media.md#media-capability-extension-assessment)
+  only with a renewed benefit/cost decision. This includes unfinished
+  cross-platform capture and capability negotiation; local tests alone do not
+  authorize a protocol break or a 2.0 release. Retain recoverable Git evidence
+  for the experiment without requiring an active worktree.
 - [ ] **Browser-internal encoder work.** Paused by the owner on 2026-10-01.
   [Comparisons and Chromium traces](./research/browser-local-encoding-pool.md#sustained-h264-recovery)
   own the evidence for synchronous H264 initialization, native adaptation and
@@ -53,7 +32,7 @@ history. A parked idea is not implementation authority.
 - [ ] **32-bit Windows/Linux Apps.** Deferred by the owner on 2026-10-02;
   no package or website option is planned. Browser use remains available where
   the OS/browser supports the required media APIs. Retain the isolated
-  `spike/windows-x86-capture` experiment; revisit its native dependencies,
+  Git evidence for the Windows x86 capture experiment; revisit its native dependencies,
   atomic alignment and real 32-bit device coverage only if this work is reopened.
 - [ ] **Windows ARM64 App.** Deferred by the owner on 2026-10-03. Keep Windows
   App packages and website downloads x64-only until this work is reopened.
@@ -62,6 +41,10 @@ history. A parked idea is not implementation authority.
 
 These proposals remain deferred beyond the accepted interaction phase.
 
+- [ ] **Managed Demo hosting.** Evaluate cost and public UDP support before any
+  migration. The assessment remains outside the current product release; keep
+  the existing P2P-only Demo deployment until a provider and operating boundary
+  are accepted.
 - [ ] **Phone as a Host microphone: assess after the current work.** Explore an
   opt-in link that pairs a phone's microphone with the Host's existing audio
   mixer. Evaluate pairing/revocation, latency/echo, browser background limits
@@ -88,9 +71,9 @@ of a reporter's cause; research owns the completed experiments and their limits.
 - [ ] **HDR, audio-exclusion and mobile interaction device coverage.** Complete
   the [physical matrix](./verification-status.md#device-evidence-boundary):
   HDR/mixed displays, voice-app process trees across playback devices and phone
-  keyboard/theater/participant-menu interaction. Browser HDR
-  [#420](https://github.com/TNTcraftHIM/Piik/issues/420) needs its own capture
-  evidence, separate from Native conversion.
+  keyboard/theater/participant-menu interaction. Browser HDR overexposure is an
+  accepted limitation with [documented alternatives](./guide/troubleshooting.md#hdr-picture-looks-too-bright-or-washed-out);
+  reopen conversion work only with new evidence and an accepted implementation.
 - [ ] **Native H.264 motion quality (#432).** Obtain matched source/decoded
   pictures and bitstream for the original 720p30 game comparison. Retain current
   codec parameters. The [evidence review](./research/native-client-media.md#native-h264-motion-quality)
