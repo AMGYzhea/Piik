@@ -166,12 +166,15 @@ export function LauncherForm({
       {mode === "site" ? (
         <label className="lr-input lr-client-site">
           <Glyph name="link" size={18} />
+          {/* The App normalizes bare domains; type="url" would block submission first. */}
           <input
-            type="url"
+            type="text"
             value={site}
+            autoCapitalize="none"
+            autoCorrect="off"
             spellCheck={false}
             inputMode="url"
-            placeholder="https://piik.example.com"
+            placeholder="piik.example.com"
             aria-label={t("client.launch.siteAddress")}
             onChange={(event) => {
               onSiteChange(event.target.value);
@@ -209,11 +212,13 @@ export function LauncherForm({
           (mode === "local" && lan !== undefined && !lan.selected)}
       />
       <div className="lr-client-about">
-        {version && <p className="lr-client-version" aria-label={t("client.launch.version", { version })}>
-          {vis ? version : t("client.launch.version", { version })}
+        {version && <p className="lr-client-version">
+          <span className={vis ? "visually-hidden" : undefined}>{t("client.launch.version", { version })}</span>
+          {vis && <span aria-hidden="true">{version}</span>}
         </p>}
-        <p aria-label={vis ? t("client.launch.credit") : undefined}>
-          {vis ? "MIT · TNTcraft" : t("client.launch.credit")}
+        <p>
+          <span className={vis ? "visually-hidden" : undefined}>{t("client.launch.credit")}</span>
+          {vis && <span aria-hidden="true">MIT · TNTcraft</span>}
         </p>
         <div className="lr-client-project-links">
           <a href="https://piik.tv/" target="_blank" rel="noopener noreferrer" aria-label={t("client.launch.website")}>
