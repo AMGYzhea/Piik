@@ -1,0 +1,57 @@
+name: Build server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install web dependencies
+        run: npm ci
+
+      - name: Build web assets (embedded into the server binary)
+        run: npm run build:web
+
+      - name: Build the Linux server binary
+        run: |
+          go build -trimpath -ldflags "-s -w" -o piik-server ./cmd/piik-server
+        env:
+          CGO_ENABLED: "0"
+          GOOS: linux
+          GOARCH: amd64
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: piik-server-linux-amd64
+          path: piik-server
+          if-no-files-found: error
+
+      - name: Publish a rolling release for server downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete live-build --yes --cleanup-tag || true
+          gh release create live-build piik-server \
+            --title "Live build" \
+            --notes "Automated Linux amd64 server build of main." \
+            --latest
