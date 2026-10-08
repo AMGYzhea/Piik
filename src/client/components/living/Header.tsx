@@ -1,6 +1,7 @@
 // App header: brand mark, LED connection state, language selection and theme.
 import { useState } from "react";
 import { browserDebugEnabled, debugError, downloadBrowserDebug, withBrowserDebug } from "../../lib/debug";
+import { baseRoute } from "../../lib/base-path";
 import { BrandMark } from "./BrandMark";
 import { Tooltip } from "./Tooltip";
 import type { ComicKind } from "./Comic";
@@ -120,7 +121,7 @@ export function HeaderControls({ diagnosticControl }: { diagnosticControl?: Reac
 
 export function AppHeader({
   led,
-  homeHref = "/",
+  homeHref,
   diagnosticControl,
 }: {
   led?: React.ReactNode;
@@ -132,7 +133,7 @@ export function AppHeader({
     <header className="lr-top">
       <a
         className="lr-brand"
-        href={withBrowserDebug(homeHref)}
+        href={withBrowserDebug(homeHref ?? baseRoute("/"))}
         aria-label={t("brand.home")}
       >
         <BrandMark size={34} motion="once" />

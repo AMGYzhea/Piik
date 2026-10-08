@@ -635,7 +635,7 @@ export function HostPage({
   const nativeSourceSelectionRef = useRef<Extract<ShareSourceSelection, { kind: "native" }> | null>(null);
   const loadAudioApplications = useCallback(async () => {
     const client = nativeClientRef.current;
-    if (!client || !nativeModeRef.current) throw new Error("Piik App is unavailable");
+    if (!client || !nativeModeRef.current) throw new Error("The companion app is unavailable");
     return client.sources();
   }, []);
   const nativeSourceRequestRef = useRef<object | null>(null);
@@ -4561,6 +4561,15 @@ export function HostPage({
           ) : null}
         </div>
       </main>
+      <footer className="lr-site-footer">
+        <a
+          href="https://beian.miit.gov.cn/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          闽ICP备2025102805号
+        </a>
+      </footer>
     </div>
   );
 }

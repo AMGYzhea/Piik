@@ -9,7 +9,7 @@ const MaxSafeInteger = 9007199254740991
 
 // Limits and identifiers in the Piik wire contract.
 const (
-	MaxViewersPerRoomLimit      = 20
+	MaxViewersPerRoomLimit      = 200
 	MaxParticipantsPerRoomLimit = MaxViewersPerRoomLimit + 1
 	MaxSignalBytes              = 64 * 1024
 	SignalingProtocol           = "piik-v23"
@@ -59,8 +59,8 @@ var NatTraversalPaths = [...]string{"unknown", "ordinary", "predicted"}
 // DefaultQualitySettings mirrors DEFAULT_QUALITY_SETTINGS.
 var DefaultQualitySettings = QualitySettings{
 	Resolution:            "1080p",
-	MaxFramerate:          30,
-	MaxBitrate:            5_000_000,
+	MaxFramerate:          60,
+	MaxBitrate:            8_000_000,
 	DegradationPreference: "balanced",
 	ScreenAudioQuality:    "music",
 }

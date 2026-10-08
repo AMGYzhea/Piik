@@ -2198,4 +2198,21 @@ html[data-theme="dark"] .lr-tiles .lr-tile:not(.is-selected) small { color: #8ba
   }
 }
 
+/* Site ICP filing footer: quiet, centered, inherits the global palette. */
+.lr-site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px 10px;
+}
+.lr-site-footer a {
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: .05em;
+  color: var(--muted);
+  opacity: .65;
+  text-decoration: none;
+}
+.lr-site-footer a:is(:hover, :focus-visible) { opacity: 1; }
+
 /* append-sink: workflow agents append new rules ABOVE this line. */

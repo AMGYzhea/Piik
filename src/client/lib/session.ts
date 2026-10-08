@@ -7,6 +7,7 @@ import {
 } from "../../shared/protocol";
 import { z } from "zod";
 import { createOpaqueId } from "./opaque-id";
+import { baseRoute, stripBasePath } from "./base-path";
 import { isLang, type Lang } from "../locales";
 import { withBrowserDebug } from "./debug";
 
@@ -65,7 +66,7 @@ export function isValidRoomId(value: string): boolean {
 }
 
 export function roomRouteFromInput(value: string): string | null {
-  return isValidRoomId(value) ? `/r/${value}` : null;
+  return isValidRoomId(value) ? baseRoute(`/r/${value}`) : null;
 }
 
 export function roomRouteForExplicitEntry(value: string): string | null {
@@ -77,6 +78,8 @@ export function roomRouteForExplicitEntry(value: string): string | null {
 }
 
 export function parseAppRoute(pathname: string): AppRoute {
+  // Sub-path deployments serve the app under a base path (e.g. /live).
+  pathname = stripBasePath(pathname);
   if (/^\/client\/?$/.test(pathname)) {
     return { kind: "client" };
   }
@@ -472,7 +475,7 @@ export function readViewerRoute(): ViewerRoute | null {
     } else {
       clearViewerGrant(roomId);
     }
-    window.history.replaceState(window.history.state, "", withBrowserDebug(`/r/${roomId}`));
+    window.history.replaceState(window.history.state, "", withBrowserDebug(baseRoute(`/r/${roomId}`)));
     return validGrant
       ? { roomId, viewerGrant: validGrant }
       : { roomId, invalidGrant: true };

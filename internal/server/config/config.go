@@ -388,7 +388,8 @@ func toOrigin(value string) (string, error) {
 }
 
 // parseOriginURL validates an origin and returns the WHATWG-normalised URL
-// (lowercase host, default port removed, path "/").
+// (lowercase host, default port removed, path "/" or a clean base path such
+// as "/live" for sub-path deployments behind a reverse proxy).
 func parseOriginURL(value, name, scheme, alternative string) (*url.URL, error) {
 	parsed, err := url.Parse(value)
 	// net/url accepts relative references and opaque URLs that the WHATWG
@@ -400,16 +401,40 @@ func parseOriginURL(value, name, scheme, alternative string) (*url.URL, error) {
 		return nil, fmt.Errorf("%s must use %s or %s", name, scheme, alternative)
 	}
 	// WHATWG reports "/" for an empty path, while net/url leaves it "".
-	if hasUserinfo(parsed) || (parsed.Path != "" && parsed.Path != "/") ||
-		parsed.RawQuery != "" || parsed.Fragment != "" {
+	if hasUserinfo(parsed) || parsed.RawQuery != "" || parsed.Fragment != "" {
 		return nil, fmt.Errorf(
-			"%s must be an origin without credentials, path, query, or fragment", name)
+			"%s must be an origin without credentials, query, or fragment", name)
+	}
+	basePath := parsed.EscapedPath()
+	if basePath == "" {
+		basePath = "/"
+	}
+	if !strings.HasPrefix(basePath, "/") || !validBasePath(basePath) {
+		return nil, fmt.Errorf(
+			"%s must not carry dot segments, empty segments, or a trailing slash in its path", name)
 	}
 	host := normalizedHost(parsed)
 	if host == "" {
 		return nil, fmt.Errorf("%s must have a valid host and port", name)
 	}
-	return &url.URL{Scheme: parsed.Scheme, Host: host, Path: "/"}, nil
+	return &url.URL{Scheme: parsed.Scheme, Host: host, Path: basePath}, nil
+}
+
+// validBasePath accepts "/" or "/segment[/segment...]" without dot segments,
+// empty segments, or a trailing slash.
+func validBasePath(basePath string) bool {
+	if basePath == "/" {
+		return true
+	}
+	if strings.HasSuffix(basePath, "/") {
+		return false
+	}
+	for _, segment := range strings.Split(basePath[1:], "/") {
+		if segment == "" || segment == "." || segment == ".." {
+			return false
+		}
+	}
+	return true
 }
 
 // hasUserinfo ports `url.username || url.password`: WHATWG reports empty

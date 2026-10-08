@@ -1,4 +1,5 @@
 import { say } from "../ui/copy";
+import { APP_BASE } from "./base-path";
 import {
   createRoomResponseSchema,
   roomAccessUpdateResponseSchema,
@@ -61,7 +62,7 @@ function parseSiteAccessStatus(value: unknown): SiteAccessStatus {
 }
 
 export async function getSiteAccess(signal?: AbortSignal): Promise<SiteAccessStatus> {
-  const response = await fetch("/api/site-access", {
+  const response = await fetch(`${APP_BASE}api/site-access`, {
     headers: { Accept: "application/json" },
     cache: "no-store",
     signal,
@@ -81,7 +82,7 @@ export async function getSiteAccess(signal?: AbortSignal): Promise<SiteAccessSta
 }
 
 export async function getRuntimeCapabilities(signal?: AbortSignal): Promise<RuntimeCapabilities> {
-  const response = await fetch("/api/capabilities", {
+  const response = await fetch(`${APP_BASE}api/capabilities`, {
     headers: { Accept: "application/json" },
     signal,
   });
@@ -116,7 +117,7 @@ export async function getOptionalRuntimeCapabilities(): Promise<RuntimeCapabilit
 export async function authenticateSiteAccess(
   password: string,
 ): Promise<SiteAccessStatus> {
-  const response = await fetch("/api/site-access", {
+  const response = await fetch(`${APP_BASE}api/site-access`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -143,7 +144,7 @@ export async function createRoom(
   roomPassword: string | null,
   preferredRoomId: string | null = null,
 ): Promise<CreateRoomResponse> {
-  const response = await fetch("/api/rooms", {
+  const response = await fetch(`${APP_BASE}api/rooms`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -182,7 +183,7 @@ export async function replaceOwnedRoom(
   codeEntryPolicy: CodeEntryPolicy,
   roomPassword: string | null,
 ): Promise<CreateRoomResponse> {
-  const response = await fetch(`/api/rooms/${roomId}/replacement`, {
+  const response = await fetch(`${APP_BASE}api/rooms/${roomId}/replacement`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -217,7 +218,7 @@ export async function updateRoomAccess(
   hostToken: string,
   request: RoomAccessUpdateRequest,
 ): Promise<RoomAccessUpdateResponse> {
-  const response = await fetch(`/api/rooms/${roomId}/access`, {
+  const response = await fetch(`${APP_BASE}api/rooms/${roomId}/access`, {
     method: "POST",
     headers: {
       Accept: "application/json",

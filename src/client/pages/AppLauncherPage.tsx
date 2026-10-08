@@ -49,7 +49,7 @@ export function AppLauncherPage() {
 
   useEffect(() => {
     let current = true;
-    void fetch("/api/client-launcher", { cache: "no-store" })
+    void fetch(`${import.meta.env.BASE_URL}api/client-launcher`, { cache: "no-store" })
       .then(async (response) => {
         if (!response.ok) throw new Error();
         return launcherStateSchema.parse(await response.json());
@@ -98,7 +98,7 @@ export function AppLauncherPage() {
       ],
     };
     try {
-      const response = await fetch("/api/client-launcher/launch", {
+      const response = await fetch(`${import.meta.env.BASE_URL}api/client-launcher/launch`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/TNTcraftHIM/Piik/internal/server/protocol"
 )
 
 // Ported from tests/local-server-config.test.ts. The environment form,
@@ -40,7 +42,7 @@ func TestLocalMapsClientInputs(t *testing.T) {
 	if config.SiteAccessPassword != "local-access-password" {
 		t.Errorf("SiteAccessPassword = %q", config.SiteAccessPassword)
 	}
-	if config.MaxViewersPerRoom != 20 {
+	if config.MaxViewersPerRoom != protocol.MaxViewersPerRoomLimit {
 		t.Errorf("MaxViewersPerRoom = %d", config.MaxViewersPerRoom)
 	}
 	if config.EndpointMediaCopyCapacity != 2 {

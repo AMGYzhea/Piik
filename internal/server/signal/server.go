@@ -19,6 +19,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"path"
 	"sync"
 	"time"
 
@@ -319,11 +320,12 @@ func orDefault(value, fallback int) int {
 
 // InviteURL is viewerInviteUrl / the inviteUrl of createRoomResponse:
 // new URL(`/r/${roomId}`, publicBaseUrl) with the Viewer grant in the
-// fragment only. viewerGrant "" is the TypeScript null.
+// fragment only. viewerGrant "" is the TypeScript null. A PUBLIC_BASE_URL
+// with a base path (sub-path deployments) prefixes the /r route.
 func InviteURL(publicBaseURL *url.URL, roomID, viewerGrant string) string {
 	invite := *publicBaseURL
 	invite.Opaque = ""
-	invite.Path = "/r/" + roomID
+	invite.Path = path.Join(publicBaseURL.Path, "r", roomID)
 	invite.RawPath = ""
 	invite.ForceQuery = false
 	invite.RawQuery = ""

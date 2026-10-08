@@ -84,7 +84,7 @@ func TestLoadDevelopmentDefaults(t *testing.T) {
 	if config.NATPredictionSTUNURLs != nil {
 		t.Errorf("NATPredictionSTUNURLs = %v, want nil (TS left it undefined)", config.NATPredictionSTUNURLs)
 	}
-	if config.MaxViewersPerRoom != 20 {
+	if config.MaxViewersPerRoom != protocol.MaxViewersPerRoomLimit {
 		t.Errorf("MaxViewersPerRoom = %d", config.MaxViewersPerRoom)
 	}
 	if config.EndpointMediaCopyCapacity != 2 {
@@ -218,7 +218,7 @@ func TestLoadAccepts(t *testing.T) {
 		check func(*testing.T, Config)
 	}{
 		{"default viewer limit", map[string]string{}, func(t *testing.T, c Config) {
-			if c.MaxViewersPerRoom != 20 {
+			if c.MaxViewersPerRoom != protocol.MaxViewersPerRoomLimit {
 				t.Errorf("MaxViewersPerRoom = %d", c.MaxViewersPerRoom)
 			}
 		}},
@@ -397,8 +397,8 @@ func TestLoadRejects(t *testing.T) {
 		// Public base URL.
 		{"public base URL credentials", map[string]string{"PUBLIC_BASE_URL": "https://user:pass@share.test"},
 			"PUBLIC_BASE_URL must be an origin"},
-		{"public base URL path", map[string]string{"PUBLIC_BASE_URL": "https://share.test/path"},
-			"PUBLIC_BASE_URL must be an origin"},
+		{"public base URL trailing-slash path", map[string]string{"PUBLIC_BASE_URL": "https://share.test/path/"},
+			"PUBLIC_BASE_URL must not carry dot segments"},
 		{"public base URL query", map[string]string{"PUBLIC_BASE_URL": "https://share.test?query=1"},
 			"PUBLIC_BASE_URL must be an origin"},
 		{"public base URL fragment", map[string]string{"PUBLIC_BASE_URL": "https://share.test#fragment"},

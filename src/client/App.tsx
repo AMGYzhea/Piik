@@ -32,6 +32,7 @@ import { applyLaunchCopy, useCopy } from "./ui/copy";
 import { consoleLanguage } from "./locales";
 import { initTheme } from "./ui/theme";
 import { installBrowserDebug, withBrowserDebug } from "./lib/debug";
+import { baseRoute } from "./lib/base-path";
 
 const TooltipPreviewPage = import.meta.env.DEV
   ? lazy(() => import("./pages/TooltipPreviewPage").then((module) => ({ default: module.TooltipPreviewPage })))
@@ -253,7 +254,7 @@ function StaticRoute({
               title="join.title"
               cap="join.title"
               hint="hint-join-go"
-              onClick={() => window.location.assign(withBrowserDebug("/join"))}
+              onClick={() => window.location.assign(withBrowserDebug(baseRoute("/join")))}
             />
           ) : action === "reload" ? (
             <Btn

@@ -71,7 +71,8 @@ export function shouldReconnectSignaling(code: number): boolean {
 }
 
 function signalUrl(): string {
-  const url = new URL("/signal", window.location.href);
+  // APP_BASE keeps the endpoint on the deployment sub-path (e.g. /live/signal).
+  const url = new URL(`${import.meta.env.BASE_URL}signal`, window.location.href);
   url.protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   return url.toString();
 }

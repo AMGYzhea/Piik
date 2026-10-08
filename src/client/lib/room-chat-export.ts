@@ -6,5 +6,5 @@ export function formatChatTranscript(messages: readonly RoomInteraction[]): stri
     ? [`[${new Date(message.occurredAt).toISOString()}] ${message.sender.displayName}`, message.payload.text, ""]
     : []);
   // Explicit UTF-8 signature and CRLF also work in older Windows text viewers.
-  return "\uFEFFPiik chat\r\n\r\n" + lines.join("\r\n");
+  return "\uFEFF柚儿园聊天记录\r\n\r\n" + lines.join("\r\n");
 }

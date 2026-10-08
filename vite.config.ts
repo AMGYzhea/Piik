@@ -9,6 +9,10 @@ const server = "http://127.0.0.1:8788";
 
 export default defineConfig({
   plugins: [react()],
+  // Sub-path deployment: the site is served behind a reverse proxy at
+  // https://<host>/live/ instead of a dedicated domain root. All asset URLs,
+  // API calls and routes are prefixed accordingly (see src/client/lib/base-path.ts).
+  base: "/live/",
   build: {
     outDir: "internal/server/webassets/dist",
     emptyOutDir: false,
@@ -21,9 +25,9 @@ export default defineConfig({
     // Packaging and the embedded Go bundle are outputs, not live UI sources.
     watch: { ignored: ["**/build/**", "**/internal/server/webassets/dist/**"] },
     proxy: {
-      "/api": { target: server },
-      "/healthz": { target: server },
-      "/signal": { target: server, ws: true },
+      "/live/api": { target: server, rewrite: path => path.replace(/^\/live/, "") },
+      "/live/healthz": { target: server, rewrite: path => path.replace(/^\/live/, "") },
+      "/live/signal": { target: server, ws: true, rewrite: path => path.replace(/^\/live/, "") },
     },
   },
 });

@@ -207,8 +207,8 @@ export const qualitySettingsSchema = z
 export type QualitySettings = z.infer<typeof qualitySettingsSchema>;
 export const DEFAULT_QUALITY_SETTINGS = {
   resolution: "1080p",
-  maxFramerate: 30,
-  maxBitrate: 5_000_000,
+  maxFramerate: 60,
+  maxBitrate: 8_000_000,
   degradationPreference: "balanced",
   screenAudioQuality: "music",
 } as const satisfies QualitySettings;

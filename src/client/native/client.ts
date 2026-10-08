@@ -1,4 +1,4 @@
-import type { z } from "zod";
+﻿import type { z } from "zod";
 import { debugError, debugEvent } from "../lib/debug";
 
 import type {
@@ -86,7 +86,7 @@ export interface NativeShareInput {
 
 export class NativeCompatibilityError extends Error {
   constructor(readonly actualProtocol: number) {
-    super(`Piik App control protocol ${actualProtocol} is incompatible with ${NATIVE_CLIENT_PROTOCOL}`);
+    super(`Companion app control protocol ${actualProtocol} is incompatible with ${NATIVE_CLIENT_PROTOCOL}`);
     this.name = "NativeCompatibilityError";
   }
 }
@@ -99,12 +99,12 @@ export class NativeRequestError extends Error {
     options?: ErrorOptions,
   ) {
     super({
-      unavailable: "Piik App is unavailable",
-      timeout: "Piik App request timed out",
-      "send-failed": "Piik App request failed",
-      rejected: "Piik App request failed",
-      "invalid-response": "Piik App response is invalid",
-      disconnected: "Piik App disconnected",
+      unavailable: "The companion app is unavailable",
+      timeout: "Companion app request timed out",
+      "send-failed": "Companion app request failed",
+      rejected: "Companion app request failed",
+      "invalid-response": "Companion app response is invalid",
+      disconnected: "Companion app disconnected",
     }[reason], options);
     this.name = "NativeRequestError";
   }
@@ -134,11 +134,11 @@ export async function discoverNativeHealth(
         signal: controller.signal,
         targetAddressSpace: "loopback",
       } as RequestInit);
-      if (!response.ok) throw new Error("Piik App discovery was not accepted");
+      if (!response.ok) throw new Error("The companion app discovery was not accepted");
       const body: unknown = await response.json();
       const identity = nativeDiscoveryIdentitySchema.safeParse(body);
       if (!identity.success || identity.data.port !== port) {
-        throw new Error("Not a Piik App discovery response");
+        throw new Error("Not a companion app discovery response");
       }
       if (identity.data.protocol !== NATIVE_CLIENT_PROTOCOL) {
         throw new NativeCompatibilityError(identity.data.protocol);
@@ -335,7 +335,7 @@ export class NativeClient {
 
   private validateAudioExclusion(target: NativeCaptureTarget | undefined): void {
     if (target && !this.health.nativeMedia.processAudioExclusion) {
-      throw new Error("Piik App does not support audio exclusion");
+      throw new Error("The companion app does not support audio exclusion");
     }
   }
 
@@ -618,19 +618,19 @@ export class NativeClient {
   }
 
   async microphones(): Promise<{ id: string; label: string }[]> {
-    if (!this.health.nativeMedia.microphone) throw new Error("Piik App microphone is unavailable");
+    if (!this.health.nativeMedia.microphone) throw new Error("The companion app microphone is unavailable");
     return (await this.request("list-microphones", {}, microphoneListResponseSchema)).devices;
   }
 
   async setMicrophone(shareId: string, enabled: boolean, volume: number, deviceId = ""): Promise<void> {
-    if (!this.health.nativeMedia.microphone) throw new Error("Piik App microphone is unavailable");
+    if (!this.health.nativeMedia.microphone) throw new Error("The companion app microphone is unavailable");
     await this.request("set-microphone", { shareId, enabled, volume, deviceId }, nativeAckResponseSchema, null);
   }
 
   // Dragging keeps at most one request in flight and one latest value. It cannot
   // queue dozens of slider events ahead of Stop or reopen a lost microphone.
   setMicrophoneVolume(shareId: string, volume: number): Promise<void> {
-    if (!this.health.nativeMedia.microphone) return Promise.reject(new Error("Piik App microphone is unavailable"));
+    if (!this.health.nativeMedia.microphone) return Promise.reject(new Error("The companion app microphone is unavailable"));
     const active = this.microphoneVolumeUpdate;
     if (active?.shareId === shareId) { active.volume = volume; return active.done; }
     const update = { shareId, volume, done: Promise.resolve() };
