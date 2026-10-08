@@ -5,7 +5,7 @@ import { MAX_ENDPOINT_MEDIA_COPY_CAPACITY } from "./media-copy-accounting.js";
 import { isCanonicalVideoCodecEvidence } from "./video-codec-evidence.js";
 import { NAT_TRAVERSAL_PATHS } from "./nat-candidate.js";
 
-export const MAX_VIEWERS_PER_ROOM_LIMIT = 20;
+export const MAX_VIEWERS_PER_ROOM_LIMIT = 200;
 export const MAX_PARTICIPANTS_PER_ROOM_LIMIT = MAX_VIEWERS_PER_ROOM_LIMIT + 1;
 export const MAX_SIGNAL_BYTES = 64 * 1024;
 export const SIGNALING_PROTOCOL = "piik-v23";
