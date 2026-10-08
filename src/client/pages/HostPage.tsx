@@ -391,11 +391,22 @@ export function HostPage({
     }),
   );
   const [videoCodecMode, setVideoCodecMode] =
-    useState<BrowserVideoCodecMode>("auto");
+    useState<BrowserVideoCodecMode>("h264");
   const [resolvedVideoCodec, setResolvedVideoCodec] =
     useState<BrowserVideoCodec | null>(null);
   const shareGenerationRef = useRef<string | null>(null);
   const [phase, setPhase] = useState<HostPhase>("idle");
+  // Friendly reminder that a minimized browser window throttles capture.
+  const [showWindowTip, setShowWindowTip] = useState(false);
+  useEffect(() => {
+    if (phase !== "live") {
+      setShowWindowTip(false);
+      return;
+    }
+    setShowWindowTip(true);
+    const timer = window.setTimeout(() => setShowWindowTip(false), 12_000);
+    return () => window.clearTimeout(timer);
+  }, [phase]);
   const [signalStatus, setSignalStatus] =
     useState<SignalConnectionState>("offline");
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -4567,9 +4578,26 @@ export function HostPage({
           target="_blank"
           rel="noopener noreferrer"
         >
+          <Glyph name="globe" size={12} />
           闽ICP备2025102805号
         </a>
       </footer>
+      {showWindowTip && phase === "live" ? (
+        <div className="lr-share-tip" role="status" aria-live="polite">
+          <span className="lr-share-tip-icon">
+            <Glyph name="window" size={20} />
+          </span>
+          <span className="lr-share-tip-text">{t("host.windowTip")}</span>
+          <button
+            type="button"
+            className="lr-share-tip-close"
+            aria-label={t("common.close")}
+            onClick={() => setShowWindowTip(false)}
+          >
+            <Glyph name="x" size={14} />
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

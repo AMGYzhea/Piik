@@ -2198,21 +2198,94 @@ html[data-theme="dark"] .lr-tiles .lr-tile:not(.is-selected) small { color: #8ba
   }
 }
 
-/* Site ICP filing footer: quiet, centered, inherits the global palette. */
+/* Site ICP filing footer: a quiet pill badge in the living-room palette. */
 .lr-site-footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 12px 10px;
+  padding: 10px 12px 16px;
 }
 .lr-site-footer a {
-  font-size: 11px;
-  line-height: 1.4;
-  letter-spacing: .05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  letter-spacing: .06em;
   color: var(--muted);
-  opacity: .65;
   text-decoration: none;
+  background: var(--wall-2);
+  border: 1px solid var(--control-edge);
+  border-radius: 999px;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
 }
-.lr-site-footer a:is(:hover, :focus-visible) { opacity: 1; }
+.lr-site-footer a:is(:hover, :focus-visible) {
+  color: var(--ink);
+  border-color: var(--ink);
+  background: var(--paper);
+}
+
+/* Host share reminder bubble: eye-catching, bottom-center, hand-drawn style. */
+.lr-share-tip {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(92vw, 560px);
+  padding: 10px 12px 10px 16px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--ink) 16%, transparent),
+    0 14px 32px color-mix(in srgb, var(--ink) 24%, transparent);
+  font-size: 14px;
+  line-height: 1.55;
+  z-index: 60;
+  animation: lr-share-tip-in .45s cubic-bezier(.2, 1.4, .4, 1) both;
+}
+.lr-share-tip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--paper);
+  background: var(--warn);
+  border: 2px solid var(--ink);
+}
+.lr-share-tip-text { flex: 1; min-width: 0; }
+.lr-share-tip-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.lr-share-tip-close:is(:hover, :focus-visible) {
+  background: color-mix(in srgb, var(--ink) 10%, var(--paper));
+  color: var(--ink);
+}
+@keyframes lr-share-tip-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(18px) scale(.94); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lr-share-tip { animation: none; }
+}
 
 /* append-sink: workflow agents append new rules ABOVE this line. */

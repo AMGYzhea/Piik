@@ -39,13 +39,21 @@ export const QUALITY_PROFILES = {
     degradationPreference: "balanced",
     screenAudioQuality: "music",
   },
-  "1080p60": DEFAULT_QUALITY_SETTINGS,
+  "1080p60": {
+    resolution: "1080p",
+    maxFramerate: 60,
+    maxBitrate: 8_000_000,
+    degradationPreference: "balanced",
+    screenAudioQuality: "music",
+  },
+  "1440p60": DEFAULT_QUALITY_SETTINGS,
 } as const satisfies Record<QualityProfileId, QualitySettings>;
 
 export const QUALITY_PROFILE_KEYS = {
   "720p30": "host.quality.720p30",
   "1080p30": "host.quality.1080p30",
   "1080p60": "host.quality.1080p60",
+  "1440p60": "host.quality.1440p60",
 } as const satisfies Record<QualityProfileId, CopyKey>;
 
 export const QUALITY_RESOLUTIONS = {

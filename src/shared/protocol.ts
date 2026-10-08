@@ -168,6 +168,7 @@ export const qualityProfileIdSchema = z.enum([
   "720p30",
   "1080p30",
   "1080p60",
+  "1440p60",
 ]);
 export type QualityProfileId = z.infer<typeof qualityProfileIdSchema>;
 
@@ -206,9 +207,9 @@ export const qualitySettingsSchema = z
   .strict();
 export type QualitySettings = z.infer<typeof qualitySettingsSchema>;
 export const DEFAULT_QUALITY_SETTINGS = {
-  resolution: "1080p",
+  resolution: "1440p",
   maxFramerate: 60,
-  maxBitrate: 8_000_000,
+  maxBitrate: 10_000_000,
   degradationPreference: "balanced",
   screenAudioQuality: "music",
 } as const satisfies QualitySettings;
