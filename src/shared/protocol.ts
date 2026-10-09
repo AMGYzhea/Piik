@@ -200,7 +200,7 @@ export const qualitySettingsSchema = z
   .object({
     resolution: qualityResolutionSchema,
     maxFramerate: z.number().int().min(15).max(60),
-    maxBitrate: z.number().int().min(2_000_000).max(12_000_000),
+    maxBitrate: z.number().int().min(2_000_000).max(20_000_000),
     degradationPreference: degradationPreferenceSchema,
     screenAudioQuality: screenAudioQualitySchema.optional(),
   })
@@ -209,8 +209,8 @@ export type QualitySettings = z.infer<typeof qualitySettingsSchema>;
 export const DEFAULT_QUALITY_SETTINGS = {
   resolution: "1440p",
   maxFramerate: 60,
-  maxBitrate: 10_000_000,
-  degradationPreference: "balanced",
+  maxBitrate: 12_000_000,
+  degradationPreference: "maintain-resolution",
   screenAudioQuality: "music",
 } as const satisfies QualitySettings;
 

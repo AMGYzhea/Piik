@@ -338,11 +338,11 @@ export const en: Record<CopyKey, string> = {
   "host.viewerOverview": "All viewer connections",
 
   "host.quality": "Video preset",
-  "host.quality.720p30": "720p\u00a0· 30\u00a0fps",
-  "host.quality.1080p30": "1080p\u00a0· 30\u00a0fps",
-  "host.quality.1080p60": "1080p\u00a0· 60\u00a0fps",
-  "host.quality.1440p60": "1440p\u00a0· 60\u00a0fps",
-  "host.windowTip": "Keep this browser window beside you — don't minimize it, or the stream may stutter.",
+  "host.quality.720p30": "720P·30fps",
+  "host.quality.1080p30": "1080P·30fps",
+  "host.quality.1080p60": "1080P·60fps",
+  "host.quality.1440p60": "1440P·60fps",
+  "host.windowTip": "Don't minimize the browser window while live — the stream may stutter.",
   "host.advanced": "Sharing settings",
   "host.settings.button": "Settings",
 

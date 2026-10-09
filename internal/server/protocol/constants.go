@@ -60,8 +60,8 @@ var NatTraversalPaths = [...]string{"unknown", "ordinary", "predicted"}
 var DefaultQualitySettings = QualitySettings{
 	Resolution:            "1440p",
 	MaxFramerate:          60,
-	MaxBitrate:            10_000_000,
-	DegradationPreference: "balanced",
+	MaxBitrate:            12_000_000,
+	DegradationPreference: "maintain-resolution",
 	ScreenAudioQuality:    "music",
 }
 

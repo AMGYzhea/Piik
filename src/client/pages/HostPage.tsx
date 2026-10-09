@@ -562,7 +562,7 @@ export function HostPage({
   ): void {
     setNoticeKey(key, comic, tone, vars);
   }
-  const [includeInviteCredential, setIncludeInviteCredential] = useState(true);
+  const [includeInviteCredential, setIncludeInviteCredential] = useState(false);
   const roomLink = includeInviteCredential ? room?.inviteUrl : room?.canonicalUrl;
   const roomLinkBlocked = !includeInviteCredential && room?.codeEntryPolicy === "private" && !viewerPasswordEnabled;
   const [copiedRoomLink, setCopiedRoomLink] = useState<string | null>(null);
@@ -3868,7 +3868,7 @@ export function HostPage({
                       <input
                         type="range"
                         min={2000000}
-                        max={12000000}
+                        max={20000000}
                         step={500000}
                         value={advancedQuality.maxBitrate}
                         disabled={phase === "starting" || switchingSource}

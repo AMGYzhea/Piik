@@ -338,11 +338,11 @@ export const zh = {
   "host.viewerOverview": "全员连接数据",
 
   "host.quality": "视频预设",
-  "host.quality.720p30": "720p\u00a0· 30\u00a0帧",
-  "host.quality.1080p30": "1080p\u00a0· 30\u00a0帧",
-  "host.quality.1080p60": "1080p\u00a0· 60\u00a0帧",
-  "host.quality.1440p60": "1440p\u00a0· 60\u00a0帧",
-  "host.windowTip": "请将浏览器窗口放在旁边，但不要最小化哦！否则画面会卡顿",
+  "host.quality.720p30": "720P·30帧",
+  "host.quality.1080p30": "1080P·30帧",
+  "host.quality.1080p60": "1080P·60帧",
+  "host.quality.1440p60": "1440P·60帧",
+  "host.windowTip": "直播游戏时请不要将浏览器窗口最小化，否则画面会卡顿哦",
   "host.advanced": "分享设置",
   "host.settings.button": "设置",
 
